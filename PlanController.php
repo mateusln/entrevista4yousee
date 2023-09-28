@@ -17,8 +17,10 @@ class PlanController
         $this->plan
             ->loadDataFromJsonFile()
             ->buildArrayOfPlans()
-            ->orderPlansByStartDate();
+            ->orderPlansByPriority();
 
+        // o método abaixo percorre o array de planos e cria um array unico de planos,
+        // como o array está em ordem crescente de datas o mais recente terá prioridade
         $this->dataTable = $this->plan->getUniquePlanArray();
 
         include_once('./views/PlanTable.php');

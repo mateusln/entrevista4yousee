@@ -59,9 +59,9 @@ class Plan
                 continue;
             }
 
-            $sku = str_replace(' ', '-', $plan['name']);
+            $sku = str_replace(' ', '-', $plan['name']) . '-' . str_replace(' ', '-', $plan['localidade']['nome']);
             if (isset($uniquePlanArray[$sku])) {
-                $plan = $this->chooseMostPriorityPlan($plan, $uniquePlanArray[$sku]);
+                $plan = $this->chooseMostRecentPlan($plan, $uniquePlanArray[$sku]);
             }
 
             $uniquePlanArray[$sku] = $plan;
@@ -70,19 +70,26 @@ class Plan
         return $uniquePlanArray;
     }
 
-    private function chooseMostPriorityPlan($currentPlan, $planInUniqueArray)
-    {
-        if ($currentPlan['localidade']['prioridade'] > $planInUniqueArray['localidade']['prioridade']) {
-            return $currentPlan;
+    private function chooseMostRecentPlan($plan1, $plan2){
+        if ($plan1['schedule']['startDate'] > $plan2['schedule']['startDate']) {
+            return $plan1;
         }
 
-        return $planInUniqueArray;
+        return $plan2;
     }
 
     public function orderPlansByStartDate()
     {
         usort($this->arrayOfPlans, function ($a, $b) {
             return $a['schedule']['startDate'] <=> $b['schedule']['startDate'];
+        });
+
+        return $this;
+    }
+
+    public function orderPlansByPriority(){
+        usort($this->arrayOfPlans, function ($a, $b) {
+            return $a['localidade']['prioridade'] > $b['localidade']['prioridade'] ? -1 : 1;
         });
 
         return $this;

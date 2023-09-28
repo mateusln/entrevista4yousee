@@ -23,6 +23,20 @@
     </style>
 </head>
 
+<?php
+
+function convertToBrazilianDate($date)
+{
+    $date = new DateTime($date);
+    return $date->format('d/m/Y');
+}
+
+function convertToMoneyBr($money)
+{
+    return 'R$ ' . number_format($money, 2, ',', '.');
+}
+
+?>
 <body>
     <table>
         <tr>
@@ -38,14 +52,14 @@
 
         <?php foreach ($this->dataTable as $row) : ?>
             <tr>
-                <td><?php echo $row['type']; ?></td>
-                <td><?php echo $row['name']; ?></td>
-                <td><?php echo $row['phonePrice']; ?></td>
-                <td><?php echo $row['phonePriceOnPlan']; ?></td>
-                <td><?php echo $row['installments']; ?></td>
-                <td><?php echo $row['monthly_fee']; ?></td>
-                <td><?php echo $row['schedule']['startDate']; ?></td>
-                <td><?php echo $row['localidade']['nome']; ?></td>
+                <td><?= $row['type']; ?></td>
+                <td><?= $row['name']; ?>, <?= $row['localidade']['nome']; ?></td>
+                <td><?= convertToMoneyBr($row['phonePrice']); ?></td>
+                <td><?= convertToMoneyBr($row['phonePriceOnPlan']); ?></td>
+                <td><?= $row['installments']; ?></td>
+                <td><?= convertToMoneyBr($row['monthly_fee']); ?></td>
+                <td><?= convertToBrazilianDate($row['schedule']['startDate']); ?></td>
+                <td><?= $row['localidade']['nome']; ?></td>
             </tr>
         <?php endforeach; ?>
     </table>
